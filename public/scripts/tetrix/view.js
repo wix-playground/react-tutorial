@@ -42,15 +42,18 @@ class Main extends React.Component {
     this.setState({
       highScore: this.state.highScore,
       latestScore : 0,
-      running : new Game(this.forceRender)
+      running : new Game(),
+      tickHandle : setInterval(this.tick.bind(this), 500) // override from props?
     });
-    // init ticker game.tick()
   }
   handleKeyPress(e){
-    // resolve key and call game methods
+    // TODO resolve key and call game methods
+    this.forceRender();
   }
   tick() {
-    this.setState({count: this.state.count + 1});
+    // advance game tick
+    this.state.running.tick();
+    this.forceRender();
   }
   render() {
     return (
@@ -58,7 +61,7 @@ class Main extends React.Component {
         <h1>Tetris</h1>
         <h2>highScore : {this.state.highScore} | score : {this.state.running ?  this.state.running.score : this.state.latestScore}</h2>
         <div className="mainGame">
-        {this.state.running ? <GameScreen onkeyPress={handleKeyPress} game={this.state.running.getState()}/> : <StartGame onStartGame={this.handleStartGame}/>}
+        {this.state.running ? <GameScreen onkeyPress={handleKeyPress} game={this.state.running.state}/> : <StartGame onStartGame={this.handleStartGame}/>}
         </div>
       </div>
     );

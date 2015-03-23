@@ -50,6 +50,16 @@ var colors = [
   'green', 'red', 'grey'
 ];
 
+function randomShape(width) {
+ var layout = layouts[Math.floor(Math.random()*layouts.length)];
+ var color = colors[Math.floor(Math.random()*colors.length)];
+  var position = {
+    x : Math.floor(width / 2),
+    y : 0
+  };
+  return new Shape(layout, color, position);
+}
+
 // immutable data type
 class Shape {
   constructor(layout, color, position){
@@ -107,13 +117,50 @@ class Grid {
       removed--;
     }
   }
+  getBox(col, row){
+    if (row < 0 || row +5 > this.boxes.length || col < 0 || col +1 > this.boxes[0].length){
+      throw "out of bound";
+    }
+    return this.boxes[row+4][col];
+  }
 }
+
 
 class Game {
   constructor(width, height){
+    this.width = width;
+    this.height = height;
     this.grid = new Grid(width, height);
+    this.state = {
+      width : this.width,
+      height : this.height,
+      getBox : this.grid.getBox
+    };
+    this.shape = randomShape(width);
   }
-
+  tick(){
+    if (!__tryMove(1, 0)){
+      this.grid.land(this.shape);
+      this.shape = randomShape(width);
+    }
+  }
+  moveRight(){
+    __tryMove(0, 1);
+  }
+  moveDown(){
+    __tryMove(1, 0);
+  }
+  moveLeft(){
+    __tryMove(0, -1);
+  }
+  __tryMove(down, right) {
+    var newShape = this.shape.move(down, right);
+    if (this.grid.checkIfAllowed(newShape)){
+      this.shape = newShape;
+      return true;
+    }
+    return false;
+  }
 }
 
 
