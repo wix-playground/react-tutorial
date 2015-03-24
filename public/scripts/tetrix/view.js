@@ -23,8 +23,8 @@ class StartGame extends React.Component {
   }
 }
 
-var BOX_WIDTH = 50;
-var BOX_HEIGHT = 50;
+var BOX_WIDTH = 10;
+var BOX_HEIGHT = 10;
 
 class GameScreen extends React.Component {
   constructor(props){

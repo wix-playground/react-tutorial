@@ -80,7 +80,7 @@ class Shape {
   }
 
   move(down, right){
-    return new Shape(this.layout, this.color, { x : this.position.x + down, y : this.position.y + right});
+    return new Shape(this.layout, this.color, { x : this.position.x + right, y : this.position.y + down});
   }
 
   getColorForPosition(row, col) {
@@ -104,7 +104,7 @@ class Grid {
       for (var j = 0; j < 4; j++){
         var x = shape.position.x - 2 + j;
         var y = shape.position.y - 2 + i;
-        return !shape.layout[i][j] || (x >= 0 && y >= 0 && x < boxes.length && y < boxes[0].length && !boxes[x][y]);
+        return !shape.layout[i][j] || (x >= 0 && y >= 0 && y < boxes.length && x < boxes[0].length && !boxes[y][x]);
       }
     }
   }
@@ -166,6 +166,8 @@ class Game {
         this.ended = true;
       }
     }
+
+    document.getElementById('debug').innerHTML = JSON.stringify(this, null, '\t');
   }
   didGameEnd(){
     return !!this.ended;
