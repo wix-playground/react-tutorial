@@ -80,7 +80,18 @@ class Shape {
   }
 
   move(down, right){
-    return new Shape(layout, color, { x : this.position.x + down, y : this.position.y + right});
+    return new Shape(this.layout, this.color, { x : this.position.x + down, y : this.position.y + right});
+  }
+
+  getColorForPosition(row, col) {
+    var ret = {
+      x: col - this.position.x + 2,
+      y: row - this.position.y + 2
+    };
+    if (!(ret.x < 0 || ret.x >= 4 || ret.y < 0 || ret.y >= 4) && this.layout[ret.x][ret.y]) {
+      return this.color;
+    }
+    return null;
   }
 }
 
@@ -115,8 +126,11 @@ class Grid {
     while (removed > 0){
       boxes.unshift(new Array(boxes[0].length));
       removed--;
+      this.score += 10;
     }
   }
+
+
   getBox(col, row){
     if (row < 0 || row +5 > this.boxes.length || col < 0 || col +1 > this.boxes[0].length){
       throw "out of bound";
@@ -134,24 +148,36 @@ class Game {
     this.state = {
       width : this.width,
       height : this.height,
-      getBox : this.grid.getBox
+      getBox : this.getBox.bind(this)
     };
     this.shape = randomShape(width);
   }
+
+  getBox(col, row) {
+    return this.shape.getColorForPosition(row+4, col) || this.grid.getBox(col, row);
+  }
+
   tick(){
-    if (!__tryMove(1, 0)){
+    if (!this.ended && !this.__tryMove(1, 0)){
       this.grid.land(this.shape);
       this.shape = randomShape(width);
+      if (!this.grid.checkIfAllowed(this.shape)){
+        // game over man
+        this.ended = true;
+      }
     }
   }
+  didGameEnd(){
+    return !!this.ended;
+  }
   moveRight(){
-    __tryMove(0, 1);
+    this.__tryMove(0, 1);
   }
   moveDown(){
-    __tryMove(1, 0);
+    this.__tryMove(1, 0);
   }
   moveLeft(){
-    __tryMove(0, -1);
+    this.__tryMove(0, -1);
   }
   __tryMove(down, right) {
     var newShape = this.shape.move(down, right);
