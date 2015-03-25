@@ -3,9 +3,11 @@
  */
 
 
-var DOWN_ARROW = '40';
-var RIGHT_ARROW = '39';
-var LEFT_ARROW = '37';
+var DOWN_ARROW = 40;
+var RIGHT_ARROW = 39;
+var LEFT_ARROW = 37;
+var UP_ARROW = 38;
+
 class Component{
   run(domElement){
     this.domElement = domElement;
@@ -41,6 +43,7 @@ class Component{
   handleKeyDown(e){
     // resolve key and call game methods
     e = e || window.event;
+    console.log("keyCode", e.keyCode);
     switch(e.keyCode){
       case DOWN_ARROW :
         this.game.moveDown();
@@ -50,6 +53,9 @@ class Component{
         break;
       case LEFT_ARROW :
         this.game.moveLeft();
+        break;
+      case UP_ARROW:
+        this.game.rotate();
         break;
     }
     this.gameStateSubject.onNext({

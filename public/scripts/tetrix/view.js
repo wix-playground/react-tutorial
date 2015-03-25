@@ -50,6 +50,7 @@ class GameScreen extends React.Component {
     }
 
     var style = {
+      border : 'solid 1px black',
       position : 'relative',
       display : 'block',
       width : this.props.game.width * BOX_WIDTH + 'px',
